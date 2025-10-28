@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<div class="container py-4">
+  <h2 class="text-center mb-4">🧪 Nueva Orden de Trabajo</h2>
+
+  <form method="POST">
+
+    <!-- Mostrar productor, campo y lote -->
+    <div class="mb-3">
+      <label class="form-label">👤 Productor:</label>
+      <div class="form-control-plaintext fw-bold">{{ productor_nombre }}</div>
+      <input type="hidden" name="productor_id" value="{{ productor_id }}">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">🌾 Campo:</label>
+      <div class="form-control-plaintext fw-bold">{{ campo_nombre }}</div>
+      <input type="hidden" name="campo_id" value="{{ campo_id }}">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">📍 Lote:</label>
+      <div class="form-control-plaintext fw-bold">{{ lote_nombre }}</div>
+      <input type="hidden" name="lote_id" value="{{ lote_id }}">
+    </div>
+
+    <!-- Datos de la orden -->
+    <div class="mb-3">
+      <label class="form-label">📅 Fecha estimada de trabajo:</label>
+      <input type="date" name="fecha" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">📐 Hectáreas estimadas:</label>
+      <input type="number" step="0.01" name="hectareas" class="form-control" required>
+    </div>
+
+    <h4 class="mt-4">🌦️ Condiciones de aplicación</h4>
+
+<div class="mb-3">
+  <label class="form-label">🚜 Máquina:</label>
+  <input type="text" name="maquina" class="form-control">
+</div>
+
+<div class="mb-3">
+  <label class="form-label">💧 Pastilla:</label>
+  <input type="text" name="pastilla" class="form-control">
+</div>
+
+<div class="mb-3">
+  <label class="form-label">💦 Humedad relativa mínima (%):</label>
+  <input type="number" step="1" name="humedad_minima" class="form-control">
+</div>
+
+<div class="mb-3">
+  <label class="form-label">🌡️ Temperatura máxima (°C):</label>
+  <input type="number" step="0.1" name="temperatura_maxima" class="form-control">
+</div>
+
+<div class="mb-3">
+  <label class="form-label">🌬️ Velocidad de viento máxima (km/h):</label>
+  <input type="number" step="0.1" name="viento_maximo" class="form-control">
+</div>
+
+<div class="mb-3">
+  <label class="form-label">🧭 Dirección del viento:</label>
+  <input type="text" name="direccion_viento" class="form-control">
+</div>
+
+<div class="mb-3">
+  <label class="form-label">⏳ Carencia (días):</label>
+  <input type="number" step="1" name="carencia" class="form-control">
+</div>
+
+<div class="mb-3">
+  <label class="form-label">🧪 Tasa de aplicación:</label>
+  <input type="text" name="tasa_aplicacion" class="form-control">
+</div>
+
+<div class="mb-3">
+  <label class="form-label">📝 Observaciones técnicas:</label>
+  <textarea name="observaciones" class="form-control" rows="3"></textarea>
+</div>
+
+<div class="mb-3">
+  <label class="form-label">👷 Contratista:</label>
+  <input type="text" name="contratista" class="form-control">
+</div>
+
+
+    <!-- Productos aplicados -->
+    <h4 class="mt-4">🧪 Productos aplicados</h4>
+    <div id="productos" class="mb-3">
+      <div class="row g-2 producto-item">
+        <div class="col-5">
+          <input type="text" name="producto[]" class="form-control" placeholder="Producto">
+        </div>
+        <div class="col-3">
+          <select name="unidad[]" class="form-select">
+            <option value="litros">Litros</option>
+            <option value="gramos">Gramos</option>
+          </select>
+        </div>
+        <div class="col-4">
+          <input type="number" step="0.01" name="cantidad[]" class="form-control" placeholder="Cantidad/ha">
+        </div>
+      </div>
+    </div>
+
+    <button type="button" onclick="agregarProducto()" class="btn btn-outline-success mb-3">➕ Agregar producto</button>
+    <button type="submit" class="btn btn-primary w-100">💾 Guardar orden</button>
+  </form>
+</div>
+
+<script>
+function agregarProducto() {
+  const div = document.createElement('div');
+  div.className = 'row g-2 producto-item mt-2';
+  div.innerHTML = `
+    <div class="col-5">
+      <input type="text" name="producto[]" class="form-control" placeholder="Producto">
+    </div>
+    <div class="col-3">
+      <select name="unidad[]" class="form-select">
+        <option value="litros">Litros</option>
+        <option value="gramos">Gramos</option>
+      </select>
+    </div>
+    <div class="col-4">
+      <input type="number" step="0.01" name="cantidad[]" class="form-control" placeholder="Cantidad/ha">
+    </div>
+  `;
+  document.getElementById('productos').appendChild(div);
+}
+</script>
+{% endblock %}

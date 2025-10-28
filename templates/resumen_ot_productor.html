@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<div class="container py-4">
+  <h2 class="text-center mb-4">📋 Órdenes de Trabajo del Productor</h2>
+
+  {% if ordenes %}
+  <table class="table table-bordered table-striped">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>📅 Fecha</th>
+        <th>🌾 Campo</th>
+        <th>📍 Lote</th>
+        <th>🧪 Productos aplicados</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for o in ordenes %}
+      <tr>
+        <td>{{ o.id }}</td>
+        <td>{{ o.fecha.strftime('%d/%m/%Y') if o.fecha else '—' }}</td>
+        <td>{{ o.campo }}</td>
+        <td>{{ o.lote }}</td>
+        <td>{{ o.productos or '—' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="alert alert-warning text-center">
+    No hay órdenes de trabajo registradas para este productor.
+  </div>
+  {% endif %}
+
+  <div class="text-end mt-3">
+    <a href="/productores" class="btn btn-secondary">← Volver a Productores</a>
+  </div>
+</div>
+{% endblock %}
