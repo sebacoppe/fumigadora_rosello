@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<div class="container py-4">
+  <h2 class="mb-4">🧑‍🌾 Seleccionar Productor</h2>
+  <div class="row">
+    {% for p in productores %}
+    <div class="col-md-4 mb-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">{{ p.nombre }}</h5>
+          <p class="card-text">CUIT: {{ p.cuit }}</p>
+          <a href="{{ url_for('ordenes.nueva_orden', productor_id=p.id) }}" class="btn btn-primary">➕ Crear OT</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

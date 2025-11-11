@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block contenido %}
 <div class="container py-3">
-  <h2 class="text-center mb-4">👤 Productores, Campos y Lotes</h2>
+  <h2 class="text-center mb-4">👤 Productores</h2>
 
   {% for p in productores %}
   <div class="card mb-4 shadow-sm">
@@ -9,69 +9,18 @@
       {{ p.nombre }} — CUIT: {{ p.cuit }} — Localidad: {{ p.localidad }}
     </div>
     <div class="card-body">
-      <div class="mb-3">
-        <label for="campo_{{ p.id }}" class="form-label">🌾 Seleccionar Campo</label>
-        <select class="form-select campo-select" id="campo_{{ p.id }}" data-productor="{{ p.id }}">
-          <option value="">-- Seleccionar --</option>
-          {% for c in campos if c.productor_id == p.id %}
-          <option value="{{ c.id }}">{{ c.nombre }}</option>
-          {% endfor %}
-        </select>
-      </div>
+      <form method="GET" action="{{ url_for('ordenes.nueva_orden') }}">
+        <input type="hidden" name="productor_id" value="{{ p.id }}">
 
-      <div class="mb-3">
-        <label for="lote_{{ p.id }}" class="form-label">📍 Lotes del campo</label>
-        <select class="form-select lote-select" id="lote_{{ p.id }}">
-          <option value="">-- Seleccionar un campo primero --</option>
-        </select>
-      </div>
-      <!-- 🔘 Botón para crear OT -->
-      <div class="text-end">
-          
-        <button onclick="redirigirConSeleccion({{ p.id }})" class="btn btn-info btn-sm">
-           🧪 Crear OT
-        </button>
-        <a href="{{ url_for('ordenes.resumen_por_productor', productor_id=p.id) }}" class="btn btn-outline-secondary btn-sm ms-2">
-         📋 Ver OT de este productor
-        </a>
-      </div>
-      
+       
+
+        <div class="text-end">
+          <button type="submit" class="btn btn-info btn-lg w-100 mb-2">🧪 Crear Nueva OT</button>
+          <a href="{{ url_for('ordenes.resumen_por_productor', productor_id=p.id) }}" class="btn btn-outline-secondary btn-lg w-100">📋 Ver OT de este productor</a>
+        </div>
+      </form>
     </div>
   </div>
   {% endfor %}
 </div>
-
-<script>
-const lotes = {{ lotes|tojson }};
-
-document.querySelectorAll('.campo-select').forEach(select => {
-  select.addEventListener('change', function () {
-    const productorId = this.dataset.productor;
-    const campoId = this.value;
-    const loteSelect = document.getElementById(`lote_${productorId}`);
-    loteSelect.innerHTML = '<option value="">-- Seleccionar --</option>';
-
-    if (campoId) {
-      const lotesFiltrados = lotes.filter(l => l.campo_id == campoId);
-      lotesFiltrados.forEach(lote => {
-        const option = document.createElement('option');
-        option.value = lote.id;
-        option.textContent = lote.nombre;
-        loteSelect.appendChild(option);
-      });
-    }
-  });
-});
-function redirigirConSeleccion(productorId) {
-  const campoId = document.getElementById(`campo_${productorId}`).value;
-  const loteId = document.getElementById(`lote_${productorId}`).value;
-
-  if (!campoId || !loteId) {
-    alert("Seleccioná campo y lote antes de continuar.");
-    return;
-  }
-
-  window.location.href = `/nueva_orden?productor_id=${productorId}&campo_id=${campoId}&lote_id=${loteId}`;
-}
-</script>
 {% endblock %}

@@ -1,120 +1,120 @@
-from flask import Blueprint, render_template, request, redirect
-from models.db import mysql
-from flask import jsonify
-import MySQLdb.cursors
+from flask import Blueprint, render_template, request, redirect, url_for
+from models.productor import Productor
+from models.orden import OrdenTrabajo
+from models.db import db
+from io import BytesIO
+import pdfkit
+from flask import send_file
+from datetime import datetime
+import os
+import urllib.parse
+
+
 
 ordenes_bp = Blueprint('ordenes', __name__)
 
+
 @ordenes_bp.route('/nueva_orden', methods=['GET', 'POST'])
 def nueva_orden():
-    cursor = mysql.connection.cursor()
-
     if request.method == 'POST':
-       
-        # Capturar datos del formulario
-        productor_id = request.form['productor_id']
-        campo_id = request.form['campo_id']
-        lote_id = request.form['lote_id']
-        fecha = request.form['fecha']
-        hectareas = request.form['hectareas']
-    
+        fecha_str = request.form.get('fecha')
+        fecha = datetime.strptime(fecha_str, '%Y-%m-%d') if fecha_str else None
 
-        # Insertar orden
-        cursor.execute("""
-            INSERT INTO ordenes (productor_id, campo_id, lote_id, fecha, hectareas_estimadas)
-            VALUES (%s, %s, %s, %s, %s)
-        """, (productor_id, campo_id, lote_id, fecha, hectareas))
-        orden_id = cursor.lastrowid
+        hectareas_str = request.form.get('hectareas')
+        hectareas = float(hectareas_str) if hectareas_str else 0.0
 
-        # Insertar productos aplicados
-        productos = request.form.getlist('producto[]')
-        unidades = request.form.getlist('unidad[]')
-        dosis = request.form.getlist('cantidad[]')
+        fecha_aplicacion_str = request.form.get('fecha_aplicacion')
+        fecha_aplicacion = datetime.strptime(fecha_aplicacion_str, '%Y-%m-%d') if fecha_aplicacion_str else None
 
-        for i in range(len(productos)):
-            cursor.execute("""
-                INSERT INTO aplicaciones (orden_id, producto, unidad, cantidad_por_hectarea)
-                VALUES (%s, %s, %s, %s)
-            """, (orden_id, productos[i], unidades[i], dosis[i]))
+        fecha_inicio_str = request.form.get('fecha_inicio')
+        fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d') if fecha_inicio_str else None
 
-        mysql.connection.commit()
-        return redirect(f'/resumen_productor/{productor_id}')
-
-    # GET: Capturar parámetros desde la URL
-    productor_id = request.args.get('productor_id')
-    campo_id = request.args.get('campo_id')
-    lote_id = request.args.get('lote_id')
-
-    productor_nombre = campo_nombre = lote_nombre = None
-
-    if productor_id:
-        cursor.execute("SELECT nombre FROM productores WHERE id = %s", (productor_id,))
-        resultado = cursor.fetchone()
-        productor_nombre = resultado[0] if resultado else None
-
-    if campo_id:
-        cursor.execute("SELECT nombre FROM campos WHERE id = %s", (campo_id,))
-        resultado = cursor.fetchone()
-        campo_nombre = resultado[0] if resultado else None
-
-    if lote_id:
-        cursor.execute("SELECT nombre FROM lotes WHERE id = %s", (lote_id,))
-        resultado = cursor.fetchone()
-        lote_nombre = resultado[0] if resultado else None
-
-    
-    # Renderizar formulario vacío
-    return render_template('nueva_orden.html',
-        productor_id=productor_id,
-        campo_id=campo_id,
-        lote_id=lote_id,
-        productor_nombre=productor_nombre,
-        campo_nombre=campo_nombre,
-        lote_nombre=lote_nombre
-    )
+        # ... continuar con la creación de la OT
 
 
 
 
-@ordenes_bp.route('/api/campos/<int:productor_id>')
-def api_campos(productor_id):
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("SELECT id, nombre FROM campos WHERE productor_id = %s", (productor_id,))
-    campos = cursor.fetchall()
-    return jsonify(campos)
+        nueva_ot = OrdenTrabajo(
+            productor_id=request.form['productor_id'],
+            fecha=fecha,
+            campo=request.form['campo'],
+            lote=request.form['lote'],
+            producto_aplicado='',  # o request.form.get('producto_aplicado', ''),
+            observaciones=request.form.get('observaciones', ''),
+            estado='pendiente',
+            hectareas=hectareas,
+            fecha_aplicacion=fecha_aplicacion,
+            fecha_inicio=fecha_inicio
+            
+            
+            
+            
+        )
+        db.session.add(nueva_ot)
+        db.session.commit()
+        return redirect(url_for('ordenes.resumen_por_productor', productor_id=nueva_ot.productor_id))
 
+    productor_id = request.args.get('productor_id', type=int)
+    productor = Productor.query.get_or_404(productor_id)
+    return render_template('nueva_orden.html', productor=productor)
 
-@ordenes_bp.route('/api/lotes/<int:campo_id>')
-def api_lotes(campo_id):
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("SELECT id, nombre FROM lotes WHERE campo_id = %s", (campo_id,))
-    lotes = cursor.fetchall()
-    return jsonify(lotes)
-
-
-@ordenes_bp.route('/api/test')
-def api_test():
-    return "API funcionando"
 
 
 @ordenes_bp.route('/resumen_productor/<int:productor_id>')
 def resumen_por_productor(productor_id):
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("""
-        SELECT o.id, o.fecha, c.nombre AS campo, l.nombre AS lote,
-               GROUP_CONCAT(a.producto SEPARATOR ', ') AS productos
-        FROM ordenes o
-        JOIN campos c ON o.campo_id = c.id
-        JOIN lotes l ON o.lote_id = l.id
-        LEFT JOIN aplicaciones a ON a.orden_id = o.id
-        WHERE o.productor_id = %s
-        GROUP BY o.id
-        ORDER BY o.fecha DESC
-    """, (productor_id,))
-    ordenes = cursor.fetchall()
-    return render_template('resumen_ot_productor.html', ordenes=ordenes, productor_id=productor_id)
+    ordenes = (
+        db.session.query(OrdenTrabajo)
+        .filter_by(productor_id=productor_id)
+        .order_by(OrdenTrabajo.fecha.desc())
+        .all()
+    )
 
+    resumen = []
+    for orden in ordenes:
+        resumen.append({
+            'id': orden.id,
+            'fecha': orden.fecha,
+            'campo': orden.campo,
+            'lote': orden.lote,
+            'producto_aplicado': orden.producto_aplicado,
+            'observaciones': orden.observaciones
+        })
 
+    return render_template('resumen_ot_productor.html', ordenes=resumen, productor_id=productor_id)
+
+@ordenes_bp.route('/ot/<int:ot_id>/pdf')
+def exportar_ot_pdf(ot_id):
+    ot = OrdenTrabajo.query.get_or_404(ot_id)
+    logo_path = 'file:///' + urllib.parse.quote(os.path.abspath('static/icono.png'))
+    html = render_template('ot_pdf.html', ot=ot, logo_path=logo_path)
+    
+    
+    # 🔧 Configurar pdfkit con la ruta al ejecutable wkhtmltopdf
+    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')  # ajustá si es distinta
+
+    # 🔧 Generar el PDF en memoria
+    pdf_bytes = pdfkit.from_string(html, False, configuration=config)
+    pdf_io = BytesIO(pdf_bytes)
     
 
+    # 🔧 Enviar el PDF como archivo descargable
+    return send_file(pdf_io, mimetype='application/pdf',
+                        download_name=f'OT_{ot.id}_MRFUM.pdf')
+    
+    
+@ordenes_bp.route('/ordenes')
+def listar_ordenes():
+        ordenes = OrdenTrabajo.query.order_by(OrdenTrabajo.fecha.desc()).all()
+        return render_template('listar_ordenes.html', ordenes=ordenes)
+
+@ordenes_bp.route('/seleccionar_productor')
+def seleccionar_productor():
+    productores = Productor.query.order_by(Productor.nombre).all()
+    return render_template('seleccionar_productor.html', productores=productores)
+
+
+@ordenes_bp.route('/ver/<int:ot_id>')
+def ver_ot(ot_id):
+    ot = OrdenTrabajo.query.get_or_404(ot_id)
+    return render_template('ver_ot.html', ot=ot)
 

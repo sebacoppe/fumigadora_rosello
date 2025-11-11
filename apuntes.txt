@@ -11,6 +11,27 @@ INSERT INTO productores (nombre, cuit, localidad) VALUES
 ('Productor C', '23-11223344-5', 'Lobería');
 
 
+7. SUBIR CAMBIOS A GITHUB : 
+  git add requirements.txt
+  git commit -m "Actualizo requirements.txt para Render"
+  git push
+
+8. PARA EXPORTAR LA BASE DE DATOS .... 
+   mysqldump -u root -p fumigadora_rosello > fumigadora.sql
+
+
+
+9. PARA ABRIR EL ENTORNO VIRTUAL 
+
+   source venv/bin/activate
+    
+   VERIFICAMOS QUE ESTAMOS EN EL ENTORNO CORRECTO ; python --version
+
+ 
+
+
+
+
 
 
 

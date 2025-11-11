@@ -1,0 +1,39 @@
+
+{% extends 'base.html' %}
+{% block contenido %}
+<div class="container py-3">
+  <h3 class="text-center mb-4">👤 {{ productor.nombre }} — CUIT: {{ productor.cuit }} — Localidad: {{ productor.localidad }}</h3>
+
+  {% for campo in productor.campos %}
+  <div class="card mb-3 shadow-sm">
+    <div class="card-header bg-success text-white fw-bold">
+      🌾 Campo: {{ campo.nombre }}
+      <div class="float-end">
+        <a href="{{ url_for('campos.editar_campo', id=campo.id) }}" class="btn btn-sm btn-warning">✏️</a>
+        <form action="{{ url_for('campos.eliminar_campo', id=campo.id) }}" method="POST" class="d-inline">
+          <button class="btn btn-sm btn-danger">🗑️</button>
+        </form>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="list-group">
+        {% for lote in campo.lotes %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          📍 {{ lote.nombre }}
+          <div>
+            <a href="{{ url_for('lotes.editar_lote', id=lote.id) }}" class="btn btn-sm btn-outline-warning">✏️</a>
+            <form action="{{ url_for('lotes.eliminar_lote', id=lote.id) }}" method="POST" class="d-inline">
+              <button class="btn btn-sm btn-outline-danger">🗑️</button>
+            </form>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      <a href="{{ url_for('lotes.crear_lote', campo_id=campo.id) }}" class="btn btn-outline-success btn-sm mt-2">➕ Agregar Lote</a>
+    </div>
+  </div>
+  {% endfor %}
+
+  <a href="{{ url_for('campos.crear_campo', productor_id=productor.id) }}" class="btn btn-primary btn-lg w-100">➕ Crear Nuevo Campo</a>
+</div>
+{% endblock %}

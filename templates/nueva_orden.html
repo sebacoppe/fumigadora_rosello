@@ -3,134 +3,143 @@
 <div class="container py-4">
   <h2 class="text-center mb-4">🧪 Nueva Orden de Trabajo</h2>
 
-  <form method="POST">
-
-    <!-- Mostrar productor, campo y lote -->
+  <form method="POST" action="{{ url_for('ordenes.nueva_orden') }}">
+    <!-- Productor (ya seleccionado) -->
     <div class="mb-3">
-      <label class="form-label">👤 Productor:</label>
-      <div class="form-control-plaintext fw-bold">{{ productor_nombre }}</div>
-      <input type="hidden" name="productor_id" value="{{ productor_id }}">
+      <label class="form-label">👤 Productor</label>
+      <input type="text" class="form-control" value="{{ productor.nombre }} — CUIT: {{ productor.cuit }}" disabled>
+      <input type="hidden" name="productor_id" value="{{ productor.id }}">
+    </div>
+
+    <!-- Campo y Lote -->
+    <div class="mb-3">
+      <label for="campo" class="form-label">🌾 Nombre del Campo</label>
+      <input type="text" name="campo" id="campo" class="form-control" placeholder="Ej: Campo Norte, La Esperanza" required>
+      <div class="form-text">Un productor puede tener varios campos</div>
     </div>
 
     <div class="mb-3">
-      <label class="form-label">🌾 Campo:</label>
-      <div class="form-control-plaintext fw-bold">{{ campo_nombre }}</div>
-      <input type="hidden" name="campo_id" value="{{ campo_id }}">
+      <label for="lote" class="form-label">📍 Nombre o Número de Lote</label>
+      <input type="text" name="lote" id="lote" class="form-control" placeholder="Ej: Lote A, Lote 1, Soja" required>
+      <div class="form-text">Número o nombre del lote dentro del campo</div>
     </div>
 
-    <div class="mb-3">
-      <label class="form-label">📍 Lote:</label>
-      <div class="form-control-plaintext fw-bold">{{ lote_nombre }}</div>
-      <input type="hidden" name="lote_id" value="{{ lote_id }}">
-    </div>
-
-    <!-- Datos de la orden -->
-    <div class="mb-3">
-      <label class="form-label">📅 Fecha estimada de trabajo:</label>
-      <input type="date" name="fecha" class="form-control" required>
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">📐 Hectáreas estimadas:</label>
-      <input type="number" step="0.01" name="hectareas" class="form-control" required>
-    </div>
-
-    <h4 class="mt-4">🌦️ Condiciones de aplicación</h4>
-
-<div class="mb-3">
-  <label class="form-label">🚜 Máquina:</label>
-  <input type="text" name="maquina" class="form-control">
-</div>
-
-<div class="mb-3">
-  <label class="form-label">💧 Pastilla:</label>
-  <input type="text" name="pastilla" class="form-control">
-</div>
-
-<div class="mb-3">
-  <label class="form-label">💦 Humedad relativa mínima (%):</label>
-  <input type="number" step="1" name="humedad_minima" class="form-control">
-</div>
-
-<div class="mb-3">
-  <label class="form-label">🌡️ Temperatura máxima (°C):</label>
-  <input type="number" step="0.1" name="temperatura_maxima" class="form-control">
-</div>
-
-<div class="mb-3">
-  <label class="form-label">🌬️ Velocidad de viento máxima (km/h):</label>
-  <input type="number" step="0.1" name="viento_maximo" class="form-control">
-</div>
-
-<div class="mb-3">
-  <label class="form-label">🧭 Dirección del viento:</label>
-  <input type="text" name="direccion_viento" class="form-control">
-</div>
-
-<div class="mb-3">
-  <label class="form-label">⏳ Carencia (días):</label>
-  <input type="number" step="1" name="carencia" class="form-control">
-</div>
-
-<div class="mb-3">
-  <label class="form-label">🧪 Tasa de aplicación:</label>
-  <input type="text" name="tasa_aplicacion" class="form-control">
-</div>
-
-<div class="mb-3">
-  <label class="form-label">📝 Observaciones técnicas:</label>
-  <textarea name="observaciones" class="form-control" rows="3"></textarea>
-</div>
-
-<div class="mb-3">
-  <label class="form-label">👷 Contratista:</label>
-  <input type="text" name="contratista" class="form-control">
-</div>
-
-
-    <!-- Productos aplicados -->
-    <h4 class="mt-4">🧪 Productos aplicados</h4>
-    <div id="productos" class="mb-3">
-      <div class="row g-2 producto-item">
-        <div class="col-5">
-          <input type="text" name="producto[]" class="form-control" placeholder="Producto">
-        </div>
-        <div class="col-3">
-          <select name="unidad[]" class="form-select">
-            <option value="litros">Litros</option>
-            <option value="gramos">Gramos</option>
-          </select>
-        </div>
-        <div class="col-4">
-          <input type="number" step="0.01" name="cantidad[]" class="form-control" placeholder="Cantidad/ha">
-        </div>
+    <!-- Fechas -->
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="fecha_inico" class="form-label">📅 Fecha de Inicio del Trabajo *</label>
+        <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="fecha_aplicacion" class="form-label">🧴 Fecha de Aplicación *</label>
+        <input type="date" name="fecha_aplicacion" id="fecha_aplicacion" class="form-control">
+        <div class="form-text">Fecha en que se aplica el producto</div>
       </div>
     </div>
 
-    <button type="button" onclick="agregarProducto()" class="btn btn-outline-success mb-3">➕ Agregar producto</button>
-    <button type="submit" class="btn btn-primary w-100">💾 Guardar orden</button>
+    <!-- Hectáreas y Precio -->
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="hectareas" class="form-label">📐 Hectáreas Estimadas *</label>
+        <input type="number" step="0.01" name="hectareas" id="hectareas" class="form-control" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="precio_hectarea" class="form-label">💲 Precio por Hectárea ($)</label>
+        <input type="number" step="0.01" name="precio_hectarea" id="precio_hectarea" class="form-control" value="0.00">
+        <div class="form-text">Costo del servicio por hectárea</div>
+      </div>
+    </div>
+
+    <!-- Productos a aplicar -->
+    <h5 class="mt-4">🧪 Productos a Aplicar</h5>
+    <table class="table table-bordered align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Producto / Detalle</th>
+          <th>Dosis por Ha</th>
+          <th>Unidad</th>
+          <th>Total</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-productos">
+        <tr>
+          <td><input type="text" name="producto[]" class="form-control" placeholder="Ej: Glifosato, Herbicida, etc."></td>
+          <td><input type="number" step="0.01" name="dosis[]" class="form-control" value="0.00"></td>
+          <td>
+            <select name="unidad[]" class="form-select">
+              <option value="litros">Litros</option>
+              <option value="kg">Kg</option>
+              <option value="cc">cc</option>
+            </select>
+          </td>
+          <td><input type="text" class="form-control total" disabled placeholder="Auto"></td>
+          <td><button type="button" class="btn btn-danger" onclick="this.closest('tr').remove()">🗑️</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <button type="button" class="btn btn-outline-primary mb-3" onclick="agregarFila()">➕ Agregar Producto</button>
+    <div class="mb-3">
+     <label for="producto_aplicado" class="form-label">🧪 Producto Aplicado (resumen)</label>
+     <input type="text" name="producto_aplicado" id="producto_aplicado" class="form-control" placeholder="Ej: Glifosato, Herbicida, etc.">
+     <div class="form-text">Podés escribir un resumen general si no usás la tabla</div>
+    </div>
+
+    <!-- Observaciones -->
+    <div class="mb-3">
+      <label for="observaciones" class="form-label">📝 Observaciones</label>
+      <textarea name="observaciones" id="observaciones" class="form-control" rows="3"></textarea>
+    </div>
+
+    <!-- Botón de envío -->
+    <div class="text-end">
+      <button type="submit" class="btn btn-success btn-lg">💾 Guardar Orden de Trabajo</button>
+    </div>
   </form>
 </div>
 
+<!-- Scripts -->
 <script>
-function agregarProducto() {
-  const div = document.createElement('div');
-  div.className = 'row g-2 producto-item mt-2';
-  div.innerHTML = `
-    <div class="col-5">
-      <input type="text" name="producto[]" class="form-control" placeholder="Producto">
-    </div>
-    <div class="col-3">
-      <select name="unidad[]" class="form-select">
-        <option value="litros">Litros</option>
-        <option value="gramos">Gramos</option>
-      </select>
-    </div>
-    <div class="col-4">
-      <input type="number" step="0.01" name="cantidad[]" class="form-control" placeholder="Cantidad/ha">
-    </div>
-  `;
-  document.getElementById('productos').appendChild(div);
+function agregarFila() {
+  const fila = `
+    <tr>
+      <td><input type="text" name="producto[]" class="form-control" placeholder="Ej: Glifosato, Herbicida, etc."></td>
+      <td><input type="number" step="0.01" name="dosis[]" class="form-control" value="0.00"></td>
+      <td>
+        <select name="unidad[]" class="form-select">
+          <option value="litros">Litros</option>
+          <option value="kg">Kg</option>
+          <option value="cc">cc</option>
+        </select>
+      </td>
+      <td><input type="text" class="form-control total" disabled placeholder="Auto"></td>
+      <td><button type="button" class="btn btn-danger" onclick="this.closest('tr').remove()">🗑️</button></td>
+    </tr>`;
+  document.getElementById('tabla-productos').insertAdjacentHTML('beforeend', fila);
+  calcularTotales();
 }
+
+function calcularTotales() {
+  const hectareas = parseFloat(document.getElementById('hectareas').value) || 0;
+  const filas = document.querySelectorAll('#tabla-productos tr');
+
+  filas.forEach(fila => {
+    const dosisInput = fila.querySelector('input[name="dosis[]"]');
+    const totalInput = fila.querySelector('.total');
+
+    if (dosisInput && totalInput) {
+      const dosis = parseFloat(dosisInput.value) || 0;
+      const total = (hectareas * dosis).toFixed(2);
+      totalInput.value = total;
+    }
+  });
+}
+
+document.getElementById('hectareas').addEventListener('input', calcularTotales);
+document.getElementById('tabla-productos').addEventListener('input', function(e) {
+  if (e.target.name === 'dosis[]') {
+    calcularTotales();
+  }
+});
 </script>
 {% endblock %}

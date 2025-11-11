@@ -4,14 +4,15 @@
   <h2 class="text-center mb-4">📋 Órdenes de Trabajo del Productor</h2>
 
   {% if ordenes %}
-  <table class="table table-bordered table-striped">
+  <table class="table table-bordered table-striped align-middle">
     <thead class="table-light">
       <tr>
         <th>ID</th>
         <th>📅 Fecha</th>
         <th>🌾 Campo</th>
         <th>📍 Lote</th>
-        <th>🧪 Productos aplicados</th>
+        <th>🧪 Producto aplicado</th>
+        <th>📄 PDF</th>
       </tr>
     </thead>
     <tbody>
@@ -21,7 +22,12 @@
         <td>{{ o.fecha.strftime('%d/%m/%Y') if o.fecha else '—' }}</td>
         <td>{{ o.campo }}</td>
         <td>{{ o.lote }}</td>
-        <td>{{ o.productos or '—' }}</td>
+        <td>{{ o.producto_aplicado or '—' }}</td>
+        <td>
+          <a href="{{ url_for('ordenes.exportar_ot_pdf', ot_id=o.id) }}" class="btn btn-sm btn-outline-danger">
+            📄 PDF
+          </a>
+        </td>
       </tr>
       {% endfor %}
     </tbody>

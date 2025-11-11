@@ -1,25 +1,16 @@
-from flask_mysqldb import MySQL,MySQLdb
+import os
+from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
 
-mysql = MySQL()
+load_dotenv()
 
+db = SQLAlchemy()
 
 def init_app(app):
     try:
-        app.config['MYSQL_HOST'] = 'localhost'
-        app.config['MYSQL_USER'] = 'root'
-        app.config['MYSQL_PASSWORD'] = ''
-        app.config['MYSQL_DB'] = 'fumigadora_rosello'
-        mysql.init_app(app)
-        print("✅ Conexión a MySQL inicializada correctamente.")
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        db.init_app(app)
+        print("✅ Conexión con SQLAlchemy inicializada correctamente.")
     except Exception as e:
-        print("❌ Error al conectar con MySQL:", e)
-
-
-def get_cursor():
-    return mysql.connection.cursor()
-
-
-def get_dict_cursor():
-    return mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-
-
+        print("❌ Error al conectar con SQLAlchemy:", e)

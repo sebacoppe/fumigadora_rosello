@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<div class="container py-4">
+  <h2>📋 Órdenes de Trabajo</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Productor</th>
+        <th>Fecha</th>
+        <th>Campo</th>
+        <th>Lote</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ot in ordenes %}
+      <tr>
+        <td>{{ ot.id }}</td>
+        <td>{{ ot.productor.nombre }}</td>
+        <td>{{ ot.fecha.strftime('%d/%m/%Y') }}</td>
+        <td>{{ ot.campo }}</td>
+        <td>{{ ot.lote }}</td>
+        <td>{{ ot.estado }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

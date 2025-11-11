@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Orden de Trabajo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      color: #333;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    header img {
+      max-height: 80px;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+    h2 {
+      font-size: 18px;
+      margin-top: 30px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+    .condiciones p {
+      margin: 5px 0;
+    }
+    .observacion {
+      margin-top: 20px;
+      font-style: italic;
+    }
+    footer {
+      margin-top: 40px;
+      font-size: 14px;
+      text-align: center;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+   <!-- <img src="file:///{{ logo_path }}" alt="Logo MR Fum"> -->
+    <h1>MR Fum</h1>
+    <p>Orden de aplicación</p>
+  </header>
+
+  <h2>Datos principales</h2>
+  <table>
+    <tr><th>Productor:</th><td>{{ ot.productor.nombre }}</td></tr>
+    <tr><th>Número OT:</th><td>OT-{{ ot.fecha.year }}-{{ '%04d' % ot.id }}</td></tr>
+    <tr><th>Tipo:</th><td>{{ ot.productor.tipo }}</td></tr>
+    <tr><th>Fecha emisión:</th><td>{{ ot.fecha.strftime('%d/%m/%Y') }}</td></tr>
+    <tr><th>Campo:</th><td>{{ ot.campo }}</td></tr>
+    <tr><th>Fecha de aplicación:</th><td>{{ ot.fecha_aplicacion.strftime('%d/%m/%Y') if ot.fecha_aplicacion else '—' }}</td></tr>
+    <tr><th>Lote:</th><td>{{ ot.lote }}</td></tr>
+    <tr><th>Teléfono:</th><td>{{ ot.productor.telefono }}</td></tr>
+  </table>
+
+  <h2>Condiciones</h2>
+  <div class="condiciones">
+    <p><strong>Hectáreas a fumigar:</strong> {{ ot.hectareas }} ha</p>
+    <p><strong>Estado:</strong> {{ ot.estado.capitalize() }}</p>
+    <p><strong>Fecha de inicio:</strong> {{ ot.fecha_inicio.strftime('%d/%m/%Y') if ot.fecha_inicio else '—' }}</p>
+  </div>
+
+  <h2>Productos a Aplicar</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Producto / Detalle</th>
+        <th>Dosis/Ha</th>
+        <th>Unidad</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in ot.aplicaciones %}
+      <tr>
+      <td>{{ p.producto }}</td>
+      <td>{{ "%.2f"|format(p.cantidad_por_hectarea) }}</td> 
+      <td>{{ p.unidad }}</td>
+      <td>{{ "%.2f"|format(p.cantidad_por_hectarea * ot.hectareas) }}</td>
+      </tr>
+      {% endfor %}
+      {% if not ot.aplicaciones %}
+      <tr>
+      <td colspan="4">No hay productos cargados para esta orden.</td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+
+  <div class="observacion">
+    <strong>Observación:</strong><br>
+    {{ ot.observaciones }}
+  </div>
+
+  <footer>
+    Matías Rosello - Servicios de Fumigación<br>
+    conectadosXqr - soluciones informáticas para las pymes agropecuarias
+  </footer>
+
+</body>
+</html>
