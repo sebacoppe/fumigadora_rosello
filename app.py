@@ -8,6 +8,7 @@ from rutas.dashboard import dashboard_bp
 from rutas.facturacion import facturacion_bp
 from flask_migrate import Migrate,upgrade
 from models.aplicacion import Aplicacion
+import os 
 
 app = Flask(__name__)
 import os
@@ -38,3 +39,6 @@ if __name__ == '__main__':
         upgrade()
     app.run(debug=True)
 
+if os.environ.get('RENDER') == 'true':
+    with app.app_context():
+        upgrade()
