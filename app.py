@@ -6,11 +6,13 @@ from rutas.ordenes import ordenes_bp
 from rutas.productores import productores_bp
 from rutas.dashboard import dashboard_bp
 from rutas.facturacion import facturacion_bp
-from flask_migrate import Migrate
+from flask_migrate import Migrate,upgrade
 from models.aplicacion import Aplicacion
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mi_base.db'
+import os
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///mi_base.db')
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mi_base.db'
 app.secret_key = 'clave_secreta'
 
 init_app(app)
@@ -28,7 +30,11 @@ def inicio():
     colores = ['#007bff', '#28a745', '#dc3545', '#ffc107', '#17a2b8', '#6f42c1']
     return render_template('inicio.html', productores=productores, colores=colores)
 
+
+
 if __name__ == '__main__':
+    from flask_migrate import upgrade
     with app.app_context():
-        db.create_all()
+        upgrade()
     app.run(debug=True)
+
