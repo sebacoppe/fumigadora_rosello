@@ -27,7 +27,18 @@ INSERT INTO productores (nombre, cuit, localidad) VALUES
     
    VERIFICAMOS QUE ESTAMOS EN EL ENTORNO CORRECTO ; python --version
 
- 
+
+   MI URL DATABASE 
+   
+   postgresql://fumigadora_db_user:Z4jS5LgNUenQPdca5tN1RjuGasOFdgnO@dpg-d49pc8fdiees73clvde0-a.oregon-postgres.render.com/fumigadora_db
+
+
+PARA HACER UN PUSH EN GITHUB
+
+git add app.py
+git commit -m "Ejecuta flask db upgrade al iniciar en Render"
+git push
+
 
 
 
