@@ -33,8 +33,10 @@ def inicio():
 
 
 
-with app.app_context():
-    upgrade()
+if os.environ.get('RENDER') == 'true':
+    with app.app_context():
+        upgrade()
+
 
 if __name__ == '__main__':
     app.run(debug=True)
