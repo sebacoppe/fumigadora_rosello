@@ -1,1 +1,2 @@
-web: gunicorn app:app
+web: gunicorn app:app && python render_migrate.py
+

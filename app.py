@@ -11,6 +11,7 @@ from models.aplicacion import Aplicacion
 import os 
 
 app = Flask(__name__)
+
 import os
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///mi_base.db')
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mi_base.db'
@@ -31,13 +32,7 @@ def inicio():
     colores = ['#007bff', '#28a745', '#dc3545', '#ffc107', '#17a2b8', '#6f42c1']
     return render_template('inicio.html', productores=productores, colores=colores)
 
-
-
-
 if __name__ == '__main__':
     app.run(debug=True)
     
     
-if os.environ.get('RENDER') == 'true':
-    with app.app_context():
-        upgrade()    
