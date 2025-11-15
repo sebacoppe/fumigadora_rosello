@@ -1,4 +1,4 @@
 # DOCUMENTO DEL PROYECTO 
 
 
-Actualización para forzar redeploy y aplicar migraciones en Render.
+Actualización B para forzar redeploy y aplicar migraciones en Render.# Redeploy para aplicar migración
