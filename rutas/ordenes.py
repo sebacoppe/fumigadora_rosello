@@ -8,6 +8,7 @@ from flask import send_file
 from datetime import datetime
 import os
 import urllib.parse
+from models.aplicacion import Aplicacion 
 
 
 
@@ -39,7 +40,7 @@ def nueva_orden():
             fecha=fecha,
             campo=request.form['campo'],
             lote=request.form['lote'],
-            producto_aplicado='',  # o request.form.get('producto_aplicado', ''),
+            #producto_aplicado='',  # o request.form.get('producto_aplicado', ''),
             observaciones=request.form.get('observaciones', ''),
             estado='pendiente',
             hectareas=hectareas,
@@ -51,6 +52,22 @@ def nueva_orden():
             
         )
         db.session.add(nueva_ot)
+        db.session.flush()  # para obtener nueva_ot.id sin hacer commit
+
+        # Suponiendo que recibís múltiples productos desde el formulario
+        productos = request.form.getlist('producto[]')
+        unidades = request.form.getlist('unidad[]')
+        cantidades = request.form.getlist('dosis[]')
+
+        for producto, unidad, cantidad in zip(productos, unidades, cantidades):
+            aplicacion = Aplicacion(
+                orden_id=nueva_ot.id,
+                producto=producto,
+                unidad=unidad,
+                cantidad_por_hectarea=float(cantidad)
+        )
+        db.session.add(aplicacion)
+
         db.session.commit()
         return redirect(url_for('ordenes.resumen_por_productor', productor_id=nueva_ot.productor_id))
 
@@ -76,7 +93,7 @@ def resumen_por_productor(productor_id):
             'fecha': orden.fecha,
             'campo': orden.campo,
             'lote': orden.lote,
-            'producto_aplicado': orden.producto_aplicado,
+            'producto_aplicado': ', '.join([a.producto for a in orden.aplicaciones]),
             'observaciones': orden.observaciones
         })
 
