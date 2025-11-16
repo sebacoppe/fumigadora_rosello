@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
-echo "🔧 Ejecutando migraciones en render-build.sh..."
+echo "📦 Instalando dependencias con Poetry..."
+poetry install
 
-python render_migrate.py
+echo "🔧 Ejecutando migraciones en render-build.sh..."
+poetry run python render_migrate.py
