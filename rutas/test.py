@@ -1,7 +1,7 @@
 from flask import Blueprint
 from models.db import db
 from datetime import date
-from ordenes import OrdenTrabajo
+from models.orden import OrdenTrabajo
 
 test_bp = Blueprint('test', __name__)
 
