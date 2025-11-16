@@ -8,6 +8,7 @@ from rutas.dashboard import dashboard_bp
 from rutas.facturacion import facturacion_bp
 from flask_migrate import Migrate,upgrade
 from models.aplicacion import Aplicacion
+from rutas.test import test_bp
 import os 
 
 app = Flask(__name__)
@@ -25,6 +26,7 @@ app.register_blueprint(ordenes_bp, url_prefix='/ordenes')
 app.register_blueprint(productores_bp)
 app.register_blueprint(dashboard_bp)
 app.register_blueprint(facturacion_bp, url_prefix='/facturacion')
+app.register_blueprint(test_bp)
 
 @app.route('/')
 def inicio():
