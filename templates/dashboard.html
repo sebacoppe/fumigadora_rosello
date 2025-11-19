@@ -4,64 +4,93 @@
   <h2 class="text-center mb-4">📊 Panel Principal — MR FUM</h2>
 
   <!-- ⚡ Accesos rápidos -->
-  <div class="d-flex justify-content-center gap-3 mb-4 flex-wrap">
-    
-    <a href="{{ url_for('productores.nuevo_productor') }}" class="btn btn-success btn-lg">🧑‍🌾 Nuevo Productor</a>
-    <a href="{{ url_for('ordenes.seleccionar_productor') }}" class="btn btn-primary btn-lg">🧪 Nueva Orden de Trabajo</a>
-    <a href="{{ url_for('facturacion.nueva_ot') }}" class="btn btn-warning btn-lg">💰 Nueva O.T. Facturación</a>
+  <div class="d-grid gap-3 mb-4">
+    <a href="{{ url_for('productores.nuevo_productor') }}" class="btn btn-success btn-lg w-100">🧑‍🌾 Nuevo Productor</a>
+    <a href="{{ url_for('ordenes.seleccionar_productor') }}" class="btn btn-primary btn-lg w-100">🧪 Nueva Orden de Trabajo</a>
+    <a href="{{ url_for('facturacion.nueva_ot') }}" class="btn btn-warning btn-lg w-100">💰 Nueva O.T. Facturación</a>
   </div>
 
   <!-- 📊 Métricas -->
   <div class="row text-center mb-4">
-    <div class="col-md-3"><div class="card shadow-sm"><div class="card-body"><h5>🌾 Hectáreas Totales</h5><p class="fs-4">{{ total_hectareas }}</p></div></div></div>
-    <div class="col-md-3"><div class="card shadow-sm"><div class="card-body"><h5>🗓️ Productores Activos</h5><p class="fs-4">{{ productores_activos }}</p></div></div></div>
-    <div class="col-md-3"><div class="card shadow-sm"><div class="card-body"><h5>⏳ OT Pendientes</h5><p class="fs-4">{{ ot_pendientes }}</p></div></div></div>
-    <div class="col-md-3"><div class="card shadow-sm"><div class="card-body"><h5>✅ OT Completadas</h5><p class="fs-4">{{ ot_completadas }}</p></div></div></div>
+    <div class="col-12 col-md-3 mb-3">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5>🌾 Hectáreas Totales</h5>
+          <p class="fs-4">{{ total_hectareas }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-3 mb-3">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5>🗓️ Productores Activos</h5>
+          <p class="fs-4">{{ productores_activos }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-3 mb-3">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5>⏳ OT Pendientes</h5>
+          <p class="fs-4">{{ ot_pendientes }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-3 mb-3">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5>✅ OT Completadas</h5>
+          <p class="fs-4">{{ ot_completadas }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- 📅 Filtro por periodo -->
-  <form method="GET" class="row mb-4">
-    <div class="col-md-4">
+  <form method="GET" class="row mb-4 g-3">
+    <div class="col-12 col-md-4">
       <label>Desde</label>
-      <input type="date" name="desde" class="form-control" value="{{ desde }}">
+      <input type="date" name="desde" class="form-control form-control-lg" value="{{ desde }}">
     </div>
-    <div class="col-md-4">
+    <div class="col-12 col-md-4">
       <label>Hasta</label>
-      <input type="date" name="hasta" class="form-control" value="{{ hasta }}">
+      <input type="date" name="hasta" class="form-control form-control-lg" value="{{ hasta }}">
     </div>
-    <div class="col-md-4 d-flex align-items-end">
-      <button type="submit" class="btn btn-outline-secondary w-100">🔍 Buscar</button>
+    <div class="col-12 col-md-4 d-grid align-items-end">
+      <button type="submit" class="btn btn-outline-secondary btn-lg">🔍 Buscar</button>
     </div>
   </form>
 
   <!-- 📋 Órdenes recientes -->
   <h5 class="mb-3">📋 Órdenes Recientes</h5>
-  <table class="table table-striped table-hover">
-    <thead class="table-light">
-      <tr>
-        <th>Número</th>
-        <th>Productor</th>
-        <th>Fecha Trabajo</th>
-        <th>Hectáreas</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for ot in ordenes %}
-      <tr>
-        <td>OT-{{ ot.fecha.year }}-{{ '%04d' % ot.id }}</td>
-        <td>{{ ot.productor.nombre }}</td>
-        <td>{{ ot.fecha.strftime('%d/%m/%Y') }}</td>
-        <td>{{ ot.hectareas }}</td>
-        <td>{{ ot.estado.capitalize() }}</td>
-        <td>
-          <a href="{{ url_for('ordenes.ver_ot', ot_id=ot.id) }}" class="btn btn-sm btn-info">👁️</a>
-          <a href="{{ url_for('ordenes.exportar_ot_pdf', ot_id=ot.id) }}" class="btn btn-sm btn-outline-dark">📄 PDF</a>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Número</th>
+          <th>Productor</th>
+          <th>Fecha Trabajo</th>
+          <th>Hectáreas</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ot in ordenes %}
+        <tr>
+          <td>OT-{{ ot.fecha.year }}-{{ '%04d' % ot.id }}</td>
+          <td>{{ ot.productor.nombre }}</td>
+          <td>{{ ot.fecha.strftime('%d/%m/%Y') }}</td>
+          <td>{{ ot.hectareas }}</td>
+          <td>{{ ot.estado.capitalize() }}</td>
+          <td class="d-grid gap-2">
+            <a href="{{ url_for('ordenes.ver_ot', ot_id=ot.id) }}" class="btn btn-info btn-sm">👁️</a>
+            <a href="{{ url_for('ordenes.exportar_ot_pdf', ot_id=ot.id) }}" class="btn btn-outline-dark btn-sm">📄 PDF</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}

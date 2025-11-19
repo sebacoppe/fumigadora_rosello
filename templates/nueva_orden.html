@@ -7,93 +7,95 @@
     <!-- Productor (ya seleccionado) -->
     <div class="mb-3">
       <label class="form-label">👤 Productor</label>
-      <input type="text" class="form-control" value="{{ productor.nombre }} — CUIT: {{ productor.cuit }}" disabled>
+      <input type="text" class="form-control form-control-lg" value="{{ productor.nombre }} — CUIT: {{ productor.cuit }}" disabled>
       <input type="hidden" name="productor_id" value="{{ productor.id }}">
     </div>
 
     <!-- Campo y Lote -->
-    <div class="mb-3">
+    <div class="col-12 mb-3">
       <label for="campo" class="form-label">🌾 Nombre del Campo</label>
-      <input type="text" name="campo" id="campo" class="form-control" placeholder="Ej: Campo Norte, La Esperanza" required>
-      <div class="form-text">Un productor puede tener varios campos</div>
+      <input type="text" name="campo" id="campo" class="form-control form-control-lg" placeholder="Ej: Campo Norte, La Esperanza" required>
     </div>
 
-    <div class="mb-3">
+    <div class="col-12 mb-3">
       <label for="lote" class="form-label">📍 Nombre o Número de Lote</label>
-      <input type="text" name="lote" id="lote" class="form-control" placeholder="Ej: Lote A, Lote 1, Soja" required>
-      <div class="form-text">Número o nombre del lote dentro del campo</div>
+      <input type="text" name="lote" id="lote" class="form-control form-control-lg" placeholder="Ej: Lote A, Lote 1, Soja" required>
     </div>
 
     <!-- Fechas -->
     <div class="row">
-      <div class="col-md-6 mb-3">
-        <label for="fecha_inico" class="form-label">📅 Fecha de Inicio del Trabajo *</label>
-        <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" required>
+      <div class="col-12 mb-3">
+        <label for="fecha_inicio" class="form-label">📅 Fecha de Inicio del Trabajo *</label>
+        <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control form-control-lg" required>
       </div>
-      <div class="col-md-6 mb-3">
+      <div class="col-12 mb-3">
         <label for="fecha_aplicacion" class="form-label">🧴 Fecha de Aplicación *</label>
-        <input type="date" name="fecha_aplicacion" id="fecha_aplicacion" class="form-control">
+        <input type="date" name="fecha_aplicacion" id="fecha_aplicacion" class="form-control form-control-lg">
         <div class="form-text">Fecha en que se aplica el producto</div>
       </div>
     </div>
 
     <!-- Hectáreas y Precio -->
     <div class="row">
-      <div class="col-md-6 mb-3">
+      <div class="col-12 mb-3">
         <label for="hectareas" class="form-label">📐 Hectáreas Estimadas *</label>
-        <input type="number" step="0.01" name="hectareas" id="hectareas" class="form-control" required>
+        <input type="number" step="0.01" name="hectareas" id="hectareas" class="form-control form-control-lg" required>
       </div>
-      <div class="col-md-6 mb-3">
+      <div class="col-12 mb-3">
         <label for="precio_hectarea" class="form-label">💲 Precio por Hectárea ($)</label>
-        <input type="number" step="0.01" name="precio_hectarea" id="precio_hectarea" class="form-control" value="0.00">
+        <input type="number" step="0.01" name="precio_hectarea" id="precio_hectarea" class="form-control form-control-lg" value="0.00">
         <div class="form-text">Costo del servicio por hectárea</div>
       </div>
     </div>
 
     <!-- Productos a aplicar -->
     <h5 class="mt-4">🧪 Productos a Aplicar</h5>
-    <table class="table table-bordered align-middle">
-      <thead class="table-light">
-        <tr>
-          <th>Producto / Detalle</th>
-          <th>Dosis por Ha</th>
-          <th>Unidad</th>
-          <th>Total</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody id="tabla-productos">
-        <tr>
-          <td><input type="text" name="producto[]" class="form-control" placeholder="Ej: Glifosato, Herbicida, etc."></td>
-          <td><input type="number" step="0.01" name="dosis[]" class="form-control" value="0.00"></td>
-          <td>
-            <select name="unidad[]" class="form-select">
-              <option value="litros">Litros</option>
-              <option value="kg">Kg</option>
-              <option value="cc">cc</option>
-            </select>
-          </td>
-          <td><input type="text" class="form-control total" disabled placeholder="Auto"></td>
-          <td><button type="button" class="btn btn-danger" onclick="this.closest('tr').remove()">🗑️</button></td>
-        </tr>
-      </tbody>
-    </table>
-    <button type="button" class="btn btn-outline-primary mb-3" onclick="agregarFila()">➕ Agregar Producto</button>
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Producto / Detalle</th>
+            <th>Dosis por Ha</th>
+            <th>Unidad</th>
+            <th>Total</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-productos">
+          <tr>
+            <td><input type="text" name="producto[]" class="form-control form-control-lg" placeholder="Ej: Glifosato, Herbicida, etc."></td>
+            <td><input type="number" step="0.01" name="dosis[]" class="form-control form-control-lg" value="0.00"></td>
+            <td>
+              <select name="unidad[]" class="form-select form-select-lg">
+                <option value="litros">Litros</option>
+                <option value="kg">Kg</option>
+                <option value="cc">cc</option>
+              </select>
+            </td>
+            <td><input type="text" class="form-control form-control-lg total" disabled placeholder="Auto"></td>
+            <td><button type="button" class="btn btn-danger btn-lg" onclick="this.closest('tr').remove()">🗑️</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button type="button" class="btn btn-outline-primary btn-lg w-100 mb-4" onclick="agregarFila()">➕ Agregar Producto</button>
+
     <div class="mb-3">
-     <label for="producto_aplicado" class="form-label">🧪 Producto Aplicado (resumen)</label>
-     <input type="text" name="producto_aplicado" id="producto_aplicado" class="form-control" placeholder="Ej: Glifosato, Herbicida, etc.">
-     <div class="form-text">Podés escribir un resumen general si no usás la tabla</div>
+      <label for="producto_aplicado" class="form-label">🧪 Producto Aplicado (resumen)</label>
+      <input type="text" name="producto_aplicado" id="producto_aplicado" class="form-control form-control-lg" placeholder="Ej: Glifosato, Herbicida, etc.">
+      <div class="form-text">Podés escribir un resumen general si no usás la tabla</div>
     </div>
 
     <!-- Observaciones -->
     <div class="mb-3">
       <label for="observaciones" class="form-label">📝 Observaciones</label>
-      <textarea name="observaciones" id="observaciones" class="form-control" rows="3"></textarea>
+      <textarea name="observaciones" id="observaciones" class="form-control form-control-lg" rows="3"></textarea>
     </div>
 
     <!-- Botón de envío -->
     <div class="text-end">
-      <button type="submit" class="btn btn-success btn-lg">💾 Guardar Orden de Trabajo</button>
+      <button type="submit" class="btn btn-success btn-lg w-100">💾 Guardar Orden de Trabajo</button>
     </div>
   </form>
 </div>
@@ -103,17 +105,17 @@
 function agregarFila() {
   const fila = `
     <tr>
-      <td><input type="text" name="producto[]" class="form-control" placeholder="Ej: Glifosato, Herbicida, etc."></td>
-      <td><input type="number" step="0.01" name="dosis[]" class="form-control" value="0.00"></td>
+      <td><input type="text" name="producto[]" class="form-control form-control-lg" placeholder="Ej: Glifosato, Herbicida, etc."></td>
+      <td><input type="number" step="0.01" name="dosis[]" class="form-control form-control-lg" value="0.00"></td>
       <td>
-        <select name="unidad[]" class="form-select">
+        <select name="unidad[]" class="form-select form-select-lg">
           <option value="litros">Litros</option>
           <option value="kg">Kg</option>
           <option value="cc">cc</option>
         </select>
       </td>
-      <td><input type="text" class="form-control total" disabled placeholder="Auto"></td>
-      <td><button type="button" class="btn btn-danger" onclick="this.closest('tr').remove()">🗑️</button></td>
+      <td><input type="text" class="form-control form-control-lg total" disabled placeholder="Auto"></td>
+      <td><button type="button" class="btn btn-danger btn-lg" onclick="this.closest('tr').remove()">🗑️</button></td>
     </tr>`;
   document.getElementById('tabla-productos').insertAdjacentHTML('beforeend', fila);
   calcularTotales();
