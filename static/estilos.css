@@ -46,3 +46,33 @@
   font-size: 1.1em;
   font-weight: bold;
 }
+
+
+footer{
+  margin-top: 40px;
+  padding: 8px;
+  text-align: center;
+  background-color: var(--color-secundario);
+  color: var(--color-texto);
+  border-radius: 5px;
+  font-size: 14px;
+
+}
+
+footer img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  max-width: 120px;
+  margin-bottom: 2px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0,2);
+  background-color: #fff;
+}
+
+footer p {
+  line-height: 1.2; /* más compacto que el valor por defecto */
+  margin-top: 0;
+}
+
+

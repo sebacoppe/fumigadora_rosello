@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<div class="container py-4">
+  <h2 class="text-center mb-4">📐 Hectáreas por Período</h2>
+
+  <!-- Formulario de fechas -->
+  <form method="GET" class="row g-3 mb-4">
+    <div class="col-12 col-md-5">
+      <label for="desde" class="form-label">Desde</label>
+      <input type="date" id="desde" name="desde" class="form-control form-control-lg" value="{{ desde }}">
+    </div>
+    <div class="col-12 col-md-5">
+      <label for="hasta" class="form-label">Hasta</label>
+      <input type="date" id="hasta" name="hasta" class="form-control form-control-lg" value="{{ hasta }}">
+    </div>
+    <div class="col-12 col-md-2 d-grid align-items-end">
+      <button type="submit" class="btn btn-primary btn-lg">🔍 Consultar</button>
+    </div>
+  </form>
+
+  <!-- Resultado -->
+  {% if total_hectareas is not none %}
+  <div class="card text-center shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">🌾 Total de Hectáreas</h5>
+      <p class="display-5">{{ total_hectareas }}</p>
+      {% if desde and hasta %}
+        <small class="text-muted">Período: {{ desde }} → {{ hasta }}</small>
+      {% endif %}
+    </div>
+  </div>
+  {% else %}
+  <div class="alert alert-info text-center">
+    Seleccioná un rango de fechas y presioná <strong>Consultar</strong> para ver el total de hectáreas.
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
